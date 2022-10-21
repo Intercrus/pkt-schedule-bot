@@ -8,6 +8,8 @@ packages = [{include = "pkt_schedule_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+aiogram = "^2.22.2"
+environs = "^9.5.0"
 
 
 [build-system]
