@@ -7,6 +7,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from environs import Env
 
+from src.handlers.commands import register_commands_handlers
 from src.handlers.user_registration import register_user_registration_handlers
 from src.handlers.main_menu import register_main_menu_handlers
 
@@ -19,6 +20,7 @@ env.str("BOT_TOKEN")
 
 
 def register_all_handlers(dp):
+    register_commands_handlers(dp)
     register_user_registration_handlers(dp)
     register_main_menu_handlers(dp)
 

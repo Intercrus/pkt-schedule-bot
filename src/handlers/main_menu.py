@@ -86,7 +86,9 @@ async def week(message: Message, state: FSMContext):
         date = (datetime.today() + timedelta(days=i)).strftime("%d.%m.%Y")
 
         if day == "Sunday":
-            output_schedule.append(f"<pre>Воскресенье, {(datetime.today() + timedelta(days=i)).strftime('%d.%m.%y')}</pre>\n<b>Выходной. Пар нет</b>\n")
+            output_schedule.append(
+                f"<pre>Воскресенье, {(datetime.today() + timedelta(days=i)).strftime('%d.%m.%y')}</pre>\nВыходной\n"
+            )
         else:
             try:
                 if data["who_is_user"] == "Студент":
@@ -96,7 +98,9 @@ async def week(message: Message, state: FSMContext):
                     schedule = CACHE[date]["teachers"][
                         data["teacher"]]
             except KeyError:
-                output_schedule.append("\n\n<pre>Это всё известное расписание на неделю</pre>")
+                output_schedule.append(
+                    "\n\n<pre>Это всё известное расписание на неделю</pre>"
+                )
                 break
 
 
@@ -109,7 +113,7 @@ async def week(message: Message, state: FSMContext):
             else:
                 output_schedule.append(
                     f"<pre>{days[day]}, {date}</pre>\n"
-                    f"<b>Выходной. Пар нет</b>\n\n")
+                    f"Выходной\n\n")
 
     await message.answer("".join(output_schedule))
 

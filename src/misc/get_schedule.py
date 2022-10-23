@@ -25,7 +25,7 @@ def get_links(root: str = env.str("PATH_TO_ROOT_FOLDER")) -> dict:
 
     gauth = GoogleAuth()
     gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        env.str("PATH_TO_SERVICE_ACCOUNT_CREDENTIALS"),
+        "src/misc/service_account.json",
         "https://www.googleapis.com/auth/drive"
     )
 
@@ -49,7 +49,7 @@ def get_links(root: str = env.str("PATH_TO_ROOT_FOLDER")) -> dict:
 
 
 def get_data(link: str) -> list:
-    gauth = service_account()
+    gauth = service_account("src/misc/service_account.json")
     sheets = gauth.open_by_url(link)
     worksheet = sheets.get_worksheet(0)
 
@@ -235,8 +235,6 @@ async def update_schedule_cache():
             data = get_data(link)
         except TypeError:
             continue
-
-        print(link, data)
 
         schedule_day = match(r'^\d{2}.\d{2}.\d{4}', data[0][0])
         schedule_day_name = data[0][0][schedule_day.end():].strip()
