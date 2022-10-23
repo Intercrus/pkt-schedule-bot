@@ -214,7 +214,7 @@ def format_schedule(input_schedule: list, is_group: bool, date) -> list:
     return output_schedule
 
 
-def update_schedule_cache():
+async def update_schedule_cache():
     global CACHE, previous_links
 
     current_links = get_links()

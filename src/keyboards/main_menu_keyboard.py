@@ -9,7 +9,7 @@ main_menu = ReplyKeyboardMarkup(
         ],
         [
             KeyboardButton(text="Неделя"),
-            KeyboardButton(text="Поиск")
+            KeyboardButton(text="Поиск <- Скоро")
         ],
     ],
     resize_keyboard=True
