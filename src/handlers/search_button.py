@@ -5,10 +5,9 @@ from aiogram.dispatcher import FSMContext
 from datetime import datetime, timedelta
 
 from src.states.bot_states import BotStates
-
 from src.misc.full_names import groups, teachers, days
-
-from src.misc.get_schedule.py import CACHE
+from src.misc.get_schedule import CACHE
+from src.misc.anti_flood import rate_limit
 
 from src.keyboards.search_keyboard import search
 from src.keyboards.main_menu_keyboard import main_menu
@@ -32,6 +31,7 @@ async def enter_desired_teacher(message: Message, state: FSMContext):
     await state.set_state(BotStates.search_by_teacher_state)
 
 
+@rate_limit(limit=12)
 async def search_by_group(message: Message, state: FSMContext):
     today_day = datetime.today().strftime("%A")
     today_date = datetime.today().strftime("%d.%m.%Y")
@@ -66,6 +66,7 @@ async def search_by_group(message: Message, state: FSMContext):
                                  "Возможно, вы ошиблись в написании группы")
 
 
+@rate_limit(limit=12)
 async def search_by_teacher(message: Message, state: FSMContext):
     today_day = datetime.today().strftime("%A")
     today_date = datetime.today().strftime("%d.%m.%Y")

@@ -5,10 +5,12 @@ from aiogram.dispatcher import FSMContext
 from src.states.bot_states import BotStates
 from src.misc.full_names import days
 from src.misc.get_schedule import CACHE
+from src.misc.anti_flood import rate_limit
 
 from datetime import datetime, timedelta
 
 
+@rate_limit(limit=12)
 async def today(message: Message, state: FSMContext):
     data = await state.get_data()
 
@@ -43,6 +45,7 @@ async def today(message: Message, state: FSMContext):
         )
 
 
+@rate_limit(limit=12)
 async def tomorrow(message: Message, state: FSMContext):
     data = await state.get_data()
 
@@ -77,6 +80,7 @@ async def tomorrow(message: Message, state: FSMContext):
         )
 
 
+@rate_limit(limit=12)
 async def week(message: Message, state: FSMContext):
     data = await state.get_data()
 

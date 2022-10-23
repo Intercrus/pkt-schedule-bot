@@ -12,6 +12,8 @@ from src.handlers.user_registration import register_user_registration_handlers
 from src.handlers.main_menu import register_main_menu_handlers
 from src.handlers.search_button import register_search_button_handlers
 
+from src.misc.anti_flood import ThrottlingMiddleware
+
 from src.misc.get_schedule import update_schedule_cache
 
 
@@ -31,8 +33,11 @@ async def main():
     bot = Bot(token=env.str("BOT_TOKEN"), parse_mode="HTML")
     dp = Dispatcher(bot, storage=MemoryStorage())
 
+    # Anti-flood
+    dp.middleware.setup(ThrottlingMiddleware())
+
     scheduler = AsyncIOScheduler()
-    await update_schedule_cache()
+
     scheduler.add_job(update_schedule_cache, "cron", day="*", hour="5,13-20")
     scheduler.start()
 
