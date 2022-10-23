@@ -10,6 +10,7 @@ from environs import Env
 from src.handlers.commands import register_commands_handlers
 from src.handlers.user_registration import register_user_registration_handlers
 from src.handlers.main_menu import register_main_menu_handlers
+from src.handlers.search_button import register_search_button_handlers
 
 from src.misc.get_schedule import update_schedule_cache
 
@@ -23,6 +24,7 @@ def register_all_handlers(dp):
     register_commands_handlers(dp)
     register_user_registration_handlers(dp)
     register_main_menu_handlers(dp)
+    register_search_button_handlers(dp)
 
 
 async def main():
