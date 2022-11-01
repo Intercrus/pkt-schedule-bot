@@ -1,10 +1,9 @@
-from aiogram import Dispatcher
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.dispatcher import FSMContext
 
-from src.states.bot_states import BotStates
+from src.misc.states import BotStates
 
-from src.keyboards.main_menu_keyboard import main_menu
+from src.keyboards.menu_keyboard import main_menu
 
 from src.misc.full_names import groups, teachers
 
@@ -39,7 +38,7 @@ async def find_name(message: Message, state: FSMContext):
         if group in groups:
             await state.update_data(group=group)
             await message.answer("Группа найдена ✅", reply_markup=main_menu)
-            await state.set_state(BotStates.main_menu_state)
+            await state.set_state(BotStates.menu_state)
         else:
             await message.answer("Группа не найдена ❌")
 
@@ -48,11 +47,6 @@ async def find_name(message: Message, state: FSMContext):
         if teacher in teachers:
             await state.update_data(teacher=teacher)
             await message.answer("Преподаватель найден ✅", reply_markup=main_menu)
-            await state.set_state(BotStates.main_menu_state)
+            await state.set_state(BotStates.menu_state)
         else:
             await message.answer("Преподаватель не найден ❌")
-
-
-def register_user_registration_handlers(dp: Dispatcher):
-    dp.register_message_handler(enter_name, state=BotStates.who_is_user_state)
-    dp.register_message_handler(find_name, state=BotStates.enter_name_state)

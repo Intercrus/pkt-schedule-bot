@@ -39,9 +39,3 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
-# Other
-service_account.json
-Procfile
-requirements.txt
-runtime.txt

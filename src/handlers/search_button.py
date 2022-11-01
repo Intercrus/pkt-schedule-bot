@@ -2,15 +2,15 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from src.states.bot_states import BotStates
+from src.misc.states import BotStates
 from src.misc.full_names import groups, teachers, days
 from src.misc.get_schedule import CACHE
 from src.misc.anti_flood import rate_limit
 
-from src.keyboards.search_keyboard import search
-from src.keyboards.main_menu_keyboard import main_menu
+from src.keyboards.search_button_keyboard import search
+from src.keyboards.menu_keyboard import main_menu
 
 
 async def search_by(message: Message, state: FSMContext):
@@ -103,11 +103,11 @@ async def search_by_teacher(message: Message, state: FSMContext):
 
 async def back_from_search(message: Message, state: FSMContext):
     await message.answer("Меню", reply_markup=main_menu)
-    await state.set_state(BotStates.main_menu_state)
+    await state.set_state(BotStates.menu_state)
 
 
 def register_search_button_handlers(dp: Dispatcher):
-    dp.register_message_handler(search_by, state=BotStates.main_menu_state, text="Поиск")
+    dp.register_message_handler(search_by, state=BotStates.menu_state, text="Поиск")
 
     dp.register_message_handler(enter_desired_group, state=BotStates.search_by_state, text="Группа")
     dp.register_message_handler(enter_desired_teacher, state=BotStates.search_by_state, text="Преподаватель")

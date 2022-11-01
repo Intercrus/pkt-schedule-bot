@@ -1,14 +1,16 @@
+import logging
+
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from oauth2client.service_account import ServiceAccountCredentials
 
-from gspread import service_account
+from gspread import service_account_from_dict
 
 from re import search, match
 
-from src.misc.full_names import groups, teachers, lessons
+from src.config import config
 
-from environs import Env
+from src.misc.full_names import groups, teachers, lessons
 
 
 CACHE = {}
@@ -16,16 +18,15 @@ CACHE = {}
 previous_links = {}
 previous_month = ""
 
-env = Env()
-env.read_env(".env")
+logger = logging.getLogger(__name__)
 
 
-def get_links(root: str = env.str("PATH_TO_ROOT_FOLDER")) -> dict:
+def get_links(root: str = config.root) -> dict:
     global previous_links, previous_month
 
     gauth = GoogleAuth()
-    gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        "src/misc/service_account.json",
+    gauth.credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+        config.credentials,
         "https://www.googleapis.com/auth/drive"
     )
 
@@ -49,7 +50,7 @@ def get_links(root: str = env.str("PATH_TO_ROOT_FOLDER")) -> dict:
 
 
 def get_data(link: str) -> list:
-    gauth = service_account("src/misc/service_account.json")
+    gauth = service_account_from_dict(config.credentials)
     sheets = gauth.open_by_url(link)
     worksheet = sheets.get_worksheet(0)
 
@@ -87,9 +88,19 @@ def get_schedule_by_group(data: list, group: str) -> list:
 
     row_groups_index, group_index = find_group(int(group[0]), rows_groups)
 
+    subject = ""
+
     from_, to_ = rows_groups[row_groups_index][1]
     for row_index in range(from_, to_):
-        subject = data[row_index][group_index]
+        try:
+            subject = data[row_index][group_index]
+        except IndexError:
+            logging.exception(
+                f"Range: {from_}:{to_}\n"
+                f"Data: {group}:{data}\n"
+                f"Indexes: row_index={row_index}, group_index={group_index}"
+            )
+
         if subject.strip():
             schedule.append(subject)
 
@@ -156,7 +167,8 @@ def format_schedule(input_schedule: list, is_group: bool, date) -> list:
     else:
         call_schedule = weekdays_call_schedule
 
-    output_schedule, group = [], ""
+    output_schedule = []
+    group = ""
 
     for subject in input_schedule:
         if not is_group:
@@ -208,7 +220,7 @@ def format_schedule(input_schedule: list, is_group: bool, date) -> list:
                 )
         except KeyError:
             output_schedule.append(
-                "\nБот не смог найти пару.\nСообщите, пожалуйста, @Intercrus об ошибке.\nПолное расписание лучше посмотреть на сайте техникума"
+                "\nБот не смог найти пару.\nСообщите, пожалуйста, @Intercrus об ошибке.\nПолное расписание лучше посмотреть на сайте https://koopteh.onego.ru/student/lessons/"
             )
 
     return output_schedule
@@ -260,4 +272,4 @@ async def update_schedule_cache():
 
         previous_links[link] = last_modified
 
-    print("Complete")
+    print("Complete update_schedule_cache()")

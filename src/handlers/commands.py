@@ -1,10 +1,9 @@
-from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 
-from src.states.bot_states import BotStates
+from src.misc.states import BotStates
 
-from src.keyboards.who_is_user_keyboard import who_is_user
+from src.keyboards.choice_keyboard import who_is_user
 
 
 async def start(message: Message, state: FSMContext):
@@ -55,15 +54,8 @@ async def help(message: Message):
 
 async def about(message: Message):
     await message.answer(
-        "PKT Bot v2.0.0\n"
+        "PKT Bot v2.1.0\n"
         "==============\n\n"
         "Section in development\n\n"
         "Author: Semyon @Intercrus"
     )
-
-
-
-def register_commands_handlers(dp: Dispatcher):
-    dp.register_message_handler(start, state="*", commands=["start"])
-    dp.register_message_handler(help, state="*", commands=["help"])
-    dp.register_message_handler(about, state="*", commands=["about"])
